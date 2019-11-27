@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class PostsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth'); //没有登陆的用户无法访问这个页面
+    }
+
     public function create()
     {
         return view('posts.create');
@@ -13,6 +19,29 @@ class PostsController extends Controller
 
     public function store()
     {
-        dd(request()->all());
+        $data = request()->validate([
+            'caption'=>'required',
+            'image'=>'required|image',
+        ]);
+
+        $imagePath = request('image')->store('uploads','public');
+
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(1200,1200);
+        $image->save();
+        auth()->user()->posts()->create([
+            'caption'=>$data['caption'],
+            'image'=>$imagePath,
+        ]);//自动添加user id
+
+        
+
+
+        return redirect('/profile/' . auth()->user()->id);
+    }
+
+
+    public function show(\App\Post $post)
+    {
+        return view('posts.show', compact('post')); //可以获取post所有内容
     }
 }
