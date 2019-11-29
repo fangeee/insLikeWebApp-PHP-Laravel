@@ -19,6 +19,7 @@ class CreateProfilesTable extends Migration
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->string('url')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
 
             $table->index('user_id'); //外键 还要在profile.php model文件定义

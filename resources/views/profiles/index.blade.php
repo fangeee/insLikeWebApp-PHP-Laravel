@@ -5,13 +5,27 @@
     <div class="row">
 
         <div class="col-3 p-5">
-            <img src="https://scontent-syd2-1.cdninstagram.com/vp/2be979fe3d7785b3fee8b4b0f5d65d41/5E6776E6/t51.2885-19/s320x320/70939187_389425611736577_6775821082835288064_n.jpg?_nc_ht=scontent-syd2-1.cdninstagram.com" class="rounded-circle w-100">
+            <img src="{{ $user->profile->profileImage() }}" class="w-100 rounded-circle">
         </div>
 
         <div class="col-9 pt-3">
             <div class="d-flex justify-content-between align-items-baseline"><h1>{{ $user->username }}</h1>
-                <a href="/p/create" class="">Add New Post</a>
+
+            <!--如何对不合法用户隐藏相应的内容 -->
+            @can('update',$user->profile)
+            <a href="/p/create" class="">Add New Post</a>
+            @endcan
+            
+            
+                
             </div>
+
+            @can('update',$user->profile)
+            <a href="/profile/{{ $user->id }}/edit">Edit Profile</a>
+            @endcan
+
+
+
             <div class="d-flex">
                 <div class="pr-5"><strong>{{ $user->posts->count()}}</strong> posts</div>
                 <div class="pr-5"><strong>23K</strong> followers</div>

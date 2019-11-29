@@ -26,12 +26,12 @@ class PostsController extends Controller
 
         $imagePath = request('image')->store('uploads','public');
 
-        $image = Image::make(public_path("storage/{$imagePath}"))->fit(1200,1200);
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(1200,1200); //改变图像为正方形
         $image->save();
         auth()->user()->posts()->create([
             'caption'=>$data['caption'],
             'image'=>$imagePath,
-        ]);//自动添加user id
+        ]);//只有登陆后用户才能post
 
         
 
