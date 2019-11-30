@@ -4,17 +4,35 @@ namespace App\Http\Controllers;
 
 use App\User;  //代表用了user用户这个class
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache; //怎么用cache
 use Intervention\Image\Facades\Image;
 
 
 class ProfilesController extends Controller
 {
-    public function index($user)  //显示用户在数据库中的信息
+    public function index(User $user)  
     {
-        $user = User::findOrFail($user);
-        return view('profiles.index',[
-            'user' => $user,
-        ]);
+        $follows = (auth()->user()) ? auth()->user()->following->contains($user->id) : false; //显示用户在数据库中的信息
+
+        //30s刷新一次关注等数目 怎么用cache
+        $postCount = Cache::remember('count.posts.' . $user->id,now()->addSeconds(30),function() use ($user) {
+            return $user->posts->count();
+        });  
+
+        
+        $followerdCount = Cache::remember('count.follower.' . $user->id,now()->addSeconds(30),function() use ($user) {
+            return $user->profile->followers->count();
+        });
+
+        $followingCount = Cache::remember('count.following.' . $user->id,now()->addSeconds(30),function() use ($user) {
+            return $user->following->count();
+        });
+
+
+        
+
+        
+        return view('profiles.index',compact('user','follows','postCount','followerdCount','followingCount'));
     }
 
     public function edit(User $user)   //更改用户信息用户输入界面

@@ -9,7 +9,11 @@
         </div>
 
         <div class="col-9 pt-3">
-            <div class="d-flex justify-content-between align-items-baseline"><h1>{{ $user->username }}</h1>
+            <div class="d-flex justify-content-between align-items-baseline">
+               <div class="d-flex align-items-center pb-3">
+                <h1>{{ $user->username }}</h1>
+                <follow-button user-id="{{ $user->id }}" follows="{{ $follows }}"></follow-button>
+               </div>
 
             <!--如何对不合法用户隐藏相应的内容 -->
             @can('update',$user->profile)
@@ -27,9 +31,9 @@
 
 
             <div class="d-flex">
-                <div class="pr-5"><strong>{{ $user->posts->count()}}</strong> posts</div>
-                <div class="pr-5"><strong>23K</strong> followers</div>
-                <div class="pr-5"><strong>212</strong> following</div>
+                <div class="pr-5"><strong>{{ $postCount}}</strong> posts</div>
+                <div class="pr-5"><strong>{{ $followerdCount }}</strong> followers</div>
+                <div class="pr-5"><strong>{{ $followingCount }}</strong> following</div>
             </div>
 
             <div class="pt-4 font-weight-bold">{{ $user->profile->title }}</div>

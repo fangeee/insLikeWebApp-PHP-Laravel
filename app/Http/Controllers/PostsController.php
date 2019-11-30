@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
@@ -10,6 +11,12 @@ class PostsController extends Controller
     public function __construct()
     {
         $this->middleware('auth'); //没有登陆的用户无法访问这个页面
+    }
+
+    public function index(){   //用户登陆后显示所有他所关注的用的posts
+        $users = auth()->user()->following()->pluck('profiles.user_id');
+        $posts = Post::whereIn('user_id',$users)->with('user')->orderBy('created_at','DESC')->paginate(6);
+        return view('posts.index',compact('posts'));
     }
 
     public function create()
